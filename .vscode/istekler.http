@@ -1,0 +1,31 @@
+### (1) API'nin çalıştığını test et
+GET http://localhost:3001/
+
+
+### (2) İlk veri parçasını ekle: ABD Su Tüketimi
+POST http://localhost:3001/api/data
+Content-Type: application/json
+
+{
+  "country": "ABD",
+  "resource": "Su",
+  "amount": 1500,
+  "unit": "Milyon Litre",
+  "data_source": "Google Environmental Report 2022"
+}
+
+### (3) İkinci veri parçasını ekle: Çin Enerji Tüketimi
+POST http://localhost:3001/api/data
+Content-Type: application/json
+
+{
+  "country": "Çin",
+  "resource": "Enerji",
+  "amount": 2800,
+  "unit": "GWh",
+  "data_source": "Tsinghua University Research Paper"
+}
+
+
+### (4) Tüm verileri listele (Doğrulama)
+GET http://localhost:3001/api/data
