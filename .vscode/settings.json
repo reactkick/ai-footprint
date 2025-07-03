@@ -1,0 +1,16 @@
+{
+    "editor.tokenColorCustomizations": {
+        "textMateRules": [
+            {
+                "scope": [
+                    "variable.parameter.advpl",
+                    "punctuation.variable.parameter.advpl"
+                ],
+                "settings": {
+                    "foreground": "#868c18",
+                    "fontStyle": "italic bold"
+                }
+            }
+        ]
+    }
+}
