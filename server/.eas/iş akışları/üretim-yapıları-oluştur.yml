@@ -1,0 +1,49 @@
+# .eas/workflows/create-production-builds.yml
+
+# Bu workflow, EAS Build'in üretim (production) derlemelerini nasıl oluşturacağını tanımlar.
+# 'eas.json' dosyasındaki 'production' profili tarafından kullanılır.
+workflows:
+  # 'build' anahtarı altında derleme ile ilgili tüm workflow'lar yer alır.
+  build:
+    # 'production' profili için tanımlamalar.
+    # Bu isim 'eas.json' dosyasındaki profil ismiyle eşleşmelidir.
+    production:
+      # Android derlemesi için yapılandırma
+      android:
+        # Derleme için kullanılacak worker imajı. 'default' en güncel stabil versiyonu kullanır.
+        image: default
+        # Google Play Store için gerekli olan format 'app-bundle'dır.
+        buildType: app-bundle
+        # Derleme sırasında kullanılacak ortam değişkenleri.
+        env:
+          # Örneğin, API anahtarınızı veya ortam adını burada belirtebilirsiniz.
+          APP_ENV: production
+        # Kimlik bilgilerinin (keystore vb.) EAS sunucularından çekileceğini belirtir.
+        # Bu, en güvenli ve tavsiye edilen yöntemdir.
+        credentialsSource: remote
+        # Derlemenin mağaza (Google Play Store) için yapıldığını belirtir.
+        distribution: store
+        # Bağımlılıkların daha hızlı yüklenmesi için cache'leme ayarları.
+        cache:
+          key: "yarn-{{ checksum 'yarn.lock' }}"
+          paths:
+            - "node_modules"
+
+      # iOS derlemesi için yapılandırma
+      ios:
+        # Derleme için kullanılacak macOS ve Xcode imajı. 'latest' en güncel olanı kullanır.
+        image: latest
+        # Apple App Store için gerekli olan format 'archive'dır.
+        buildType: archive
+        # Derleme sırasında kullanılacak ortam değişkenleri.
+        env:
+          APP_ENV: production
+        # Kimlik bilgilerinin (sertifika, provisioning profile) EAS sunucularından çekileceğini belirtir.
+        credentialsSource: remote
+        # Derlemenin mağaza (App Store) için yapıldığını belirtir.
+        distribution: store
+        # Bağımlılıkların daha hızlı yüklenmesi için cache'leme ayarları.
+        cache:
+          key: "yarn-{{ checksum 'yarn.lock' }}"
+          paths:
+            - "node_modules"
