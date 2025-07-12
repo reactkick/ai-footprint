@@ -1,31 +1,47 @@
-# ai-footprint
-Yapay zekanın kaynağının tüketimi (su, enerji vb.) takip eden ve analiz eden açık kaynaklı bir proje.
-# AI-Footprint
+# AI-Footprint 🌍
 
-Yapay zekanın gezegenimiz üzerindeki çevresel etkisini şeffaf bir şekilde izleyen açık kaynaklı bir girişim.
+[![Lisans: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-##  Proje Hakkında
+**Yapay zekanın gezegenimiz üzerindeki gizli maliyetini (su, enerji, karbon) şeffaf bir şekilde izleyen ve tahminleyen açık kaynaklı bir girişim.**
 
-Bu proje, yapay zeka teknolojilerinin (büyük dil modelleri, görüntü işleme servisleri vb.) eğitimi ve çalıştırılması sırasında tüketilen su, enerji gibi doğal kaynakları takip etmeyi amaçlamaktadır. Amacımız, politika yapıcılar, araştırmacılar ve halk için güvenilir, güncel ve anlaşılır veriler sunmaktır.
+Bu proje, büyük yapay zeka modellerinin (LLM'ler, görüntü işleme vb.) eğitimi ve çalıştırılması sırasında tüketilen doğal kaynakları takip etmeyi ve analiz etmeyi amaçlamaktadır. Şirketler bu verileri doğrudan paylaşmadığı için, projemiz **akademik araştırmalara, hakemli makalelere ve güvenilir endüstri raporlarına dayalı bir tahmin motoru** olarak çalışır.
 
-## Teknoloji Yığını
+## 🚀 Projenin Ana Yetenekleri
 
-- **Mobil/Web Arayüzü:** Expo (React Native)
-- **Veritabanı:** MongoDB Atlas
-- **Hosting (Web):** Netlify
-- **CI/CD & Otomasyon:** GitHub Actions
-- **Geliştirme Ortamı:** GitHub Codespaces
+*   **Veri Kazıma (Web Scraping):** [OpenRouter Sıralaması](https://openrouter.ai/rankings) gibi popüler platformlardan anlık olarak trend olan yapay zeka modellerini otomatik olarak çeker.
+*   **Tahmin Motoru:** Kendi veritabanımızda tutulan akademik verilere dayanarak, bu modellerin tahmini su, enerji ve karbon ayak izini hesaplar.
+*   **Metin Analizi:** [OpenRouter API](https://openrouter.ai/) entegrasyonu sayesinde, yapay zeka ile ilgili metinleri (haberler, raporlar) analiz ederek içlerindeki sayısal tüketim verilerini otomatik olarak çıkarabilir.
+*   **Açık API:** Tüm bu tahmini verileri, mobil ve web uygulamalarında kullanılmak üzere basit bir REST API üzerinden sunar.
 
-## Yol Haritası
+## 🛠️ Teknoloji Mimarisi
 
-1.  **MVP (Minimum Uygulanabilir Ürün):** Manuel olarak girilen verilerle temel ülke sıralaması ve veri görselleştirme.
-2.  **Veri Toplama Otomasyonu:** Akademik yayınları ve raporları izleyen script'ler.
-3.  **Detaylı Analizler:** YZ model türüne göre (örn: LLM vs Görüntü) tüketim analizi.
+Proje, frontend ve backend'in ayrı tutulduğu modern bir "monorepo" yapısı kullanmaktadır.
 
-## Katkıda Bulunma
+### Backend (`/server`)
+*   **Dil:** TypeScript
+*   **Framework:** Node.js & Express.js
+*   **Veritabanı:** MongoDB Atlas (Mongoose ODM ile)
+*   **Yapay Zeka Entegrasyonu:** OpenRouter API
+*   **Veri Kazıma:** Axios & Cheerio
+*   **Geliştirme Ortamı:** Termux (Android üzerinde yerel sunucu)
 
-Katkılarınız projeyi daha iyi bir hale getirecektir! Lütfen `CONTRIBUTING.md` dosyasını okuyun. (Bu dosyayı daha sonra oluşturacağız.)
+### Frontend (`/client`)
+*   **Framework:** Expo (React Native for Web & Mobile)
+*   **Dil:** JavaScript (veya TypeScript)
+*   **API İletişimi:** Axios
 
-## Lisans
+## 🏃‍♀️ Projeyi Yerel Ortamda Çalıştırma (Termux)
 
-Bu proje [MIT Lisansı](LICENSE) ile lisanslanmıştır.
+Bu proje, bir Android tablet/telefon üzerinde Termux kullanılarak geliştirilmekte ve çalıştırılmaktadır.
+
+### 1. Gerekli Kurulumlar
+
+```bash
+# Termux paketlerini güncelle
+pkg update && pkg upgrade
+
+# Gerekli araçları yükle (Node.js, Git, metin editörü)
+pkg install nodejs-lts git micro
+
+# Termux'un cihaz depolamasına erişim izni ver
+termux-setup-storage
