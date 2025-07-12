@@ -1,0 +1,5 @@
+{
+    "name": "Triggers",
+    "provider_region": "gcp-us-east4",
+    "deployment_model": "LOCAL"
+}
