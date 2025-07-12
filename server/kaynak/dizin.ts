@@ -137,3 +137,48 @@ app.get('/', (req: Request, res: Response) => {
 app.listen(PORT, () => {
   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor.`);
 });
+// ... dosyanın üst kısımdaki import'lar
+import { fetchTrendingModels } from './services/rankingScraper';
+import FootprintModel, { IFootprint } from './models/footprintModel';
+
+// ... app.use() gibi diğer kodlar
+
+/**
+ * YENİ ROTA: Trend olan modelleri çeker ve bilinen ayak izlerini hesaplar.
+ */
+app.get('/api/rankings/footprint', async (req, res) => {
+  try {
+    // 1. Adım: OpenRouter'dan anlık trend model isimlerini çek
+    const modelNames = await fetchTrendingModels();
+    if (modelNames.length === 0) {
+      return res.status(500).json({ message: 'Modeller çekilemedi.' });
+    }
+
+    // 2. Adım: Veritabanımızdaki ilgili tüm modellerin bilgilerini al
+    const knownFootprints = await FootprintModel.find({ 
+        // modelIdentifier alanında bu isimlerden herhangi birini içerenleri bul
+        modelIdentifier: { $in: modelNames.map(name => new RegExp(name, 'i')) } 
+    });
+
+    // 3. Adım: Çekilen modellerle veritabanı sonuçlarını birleştir
+    const results = modelNames.map(name => {
+      const foundData = knownFootprints.find(fp => 
+        fp.modelIdentifier.toLowerCase().includes(name.toLowerCase())
+      );
+      
+      return {
+        modelName: name,
+        hasData: !!foundData,
+        footprint: foundData || 'Bu model için veritabanında bilgi bulunamadı.'
+      };
+    });
+
+    res.json(results);
+
+  } catch (error) {
+    res.status(500).json({ message: 'Ayak izi hesaplanırken bir hata oluştu.', error });
+  }
+});
+
+
+// ... dosyanın geri kalanı
