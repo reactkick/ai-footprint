@@ -71,3 +71,69 @@ mongoose.connect(mongoURI) için
                                                                                 app.listen(PORT, () => {
                                                                                   console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor.`);
                                                                                   });
+import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import cors from 'cors';
+import 'dotenv/config'; // 'require' yerine modern 'import' kullanıyoruz
+
+// Kendi servislerimizi ve modellerimizi import ediyoruz
+import { analyzeTextWithAI } from './services/aiAnalysisService'; // Yeni AI servisi
+// Henüz model dosyası oluşturmadık ama gelecekte böyle olacak:
+// import ConsumptionData from './models/consumptionModel';
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+
+app.use(cors());
+app.use(express.json());
+
+const mongoURI = process.env.MONGO_URI;
+
+if (!mongoURI) {
+  console.error("HATA: MONGO_URI ortam değişkeni tanımlanmamış.");
+  process.exit(1);
+}
+
+mongoose.connect(mongoURI)
+  .then(() => console.log('MongoDB\'ye başarıyla bağlanıldı!'))
+  .catch(err => console.error('MongoDB bağlantı hatası:', err));
+
+// --- API Rotaları ---
+
+// Mevcut veri rotaları (bunları daha sonra model dosyasına taşıyacağız)
+// app.get('/api/data', ...);
+// app.post('/api/data', ...);
+
+/**
+ * YENİ ROTA: Metin analizi için AI servisini kullanır
+ */
+app.post('/api/analyze', async (req: Request, res: Response) => {
+  const { text } = req.body;
+
+  if (!text || typeof text !== 'string') {
+    return res.status(400).json({ message: 'Lütfen "text" alanında bir metin gönderin.' });
+  }
+
+  try {
+    const analysis = await analyzeTextWithAI(text);
+    // AI'dan gelen cevap genellikle string bir JSON'dur, bunu parse edebiliriz.
+    try {
+      const jsonAnalysis = JSON.parse(analysis);
+      res.json(jsonAnalysis);
+    } catch {
+      // Eğer AI, JSON formatında cevap vermediyse, ham metni göndeririz.
+      res.json({ analysis_text: analysis });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+app.get('/', (req: Request, res: Response) => {
+  res.send('AI-Footprint API (TypeScript) Çalışıyor!');
+});
+
+app.listen(PORT, () => {
+  console.log(`Sunucu http://localhost:${PORT} adresinde çalışıyor.`);
+});
