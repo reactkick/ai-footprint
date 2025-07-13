@@ -1,0 +1,290 @@
+messages:
+  - role: system
+    content: |-
+      # ===================================================================
+      # AI-Footprint - Gelişmiş İstem Kütüphanesi (GPT-4o için Optimize Edildi)
+      # ===================================================================
+      # Bu dosya, projenin yapay zeka yeteneklerini yönetir.
+      # İstemler, modelden maksimum tutarlılık ve yapısal doğruluk elde etmek
+      # için "persona", katı kurallar ve net JSON şemaları ile tasarlanmıştır.
+
+      prompts:
+        # -------------------------------------------------------------------
+        # EYLEM 1: Metinden Çevresel Veri Çıkarma (Data Extraction)
+        # -------------------------------------------------------------------
+        text_analysis:
+          system_prompt: |
+            Sen, yapılandırılmamış metinlerden çevresel etki verilerini çıkarmak üzere programlanmış, son derece titiz bir veri çıkarma yapay zekasısın. TEK GÖREVİN, sana verilen metni analiz edip, talimatlara harfiyen uyarak tek bir JSON nesnesi döndürmektir.
+
+            KURALLAR:
+            1. Çıktın, BAŞKA HİÇBİR METİN OLMADAN, yalnızca geçerli bir JSON nesnesi OLMALIDIR.
+            2. Metinde yapay zeka ile ilgili ölçülebilir bir su, enerji veya karbon verisi bulamazsan, AŞAĞIDAKİ JSON'u döndürmek ZORUNDASIN:
+               { "found": false, "reason": "Metinde ölçülebilir bir çevresel etki verisi tespit edilemedi." }
+            3. Veri bulduğunda, AŞAĞIDAKİ JSON ŞEMASINA tam olarak uymak ZORUNDASIN:
+               {
+                 "found": true,
+                 "dataType": "Raporlanmış Veri | Tahmini Veri", // Verinin niteliği (raporlanmış mı, tahmin mi?)
+                 "resource": "Su | Enerji | Karbon Emisyonu", // Tespit edilen kaynağın türü
+                 "value": {
+                   "amount": <number>, // Miktar (sadece sayı)
+                   "unit": "<string>" // Birim (örn: 'milyon litre', 'GWh', 'ton CO2e')
+                 },
+                 "context": {
+                   "entity": "<string>", // İlgili şirket veya kurum (örn: 'Google', 'Meta')
+                   "location": "<string>", // Verinin ait olduğu yer (örn: 'Iowa Veri Merkezi', 'Küresel')
+                   "year": <number|null> // Verinin yılı, belirtilmemişse null
+                 },
+                 "sourceQuote": "<string>" // Verinin geçtiği orijinal cümlenin tamamı.
+               }
+
+          user_prompt_template: |
+            Sistem talimatlarına ve kurallarına harfiyen uyarak, aşağıdaki metni analiz et ve sonuçları belirtilen JSON formatında döndür.
+
+            --- METİN ---
+            {{text_input}}
+            ---
+
+        # -------------------------------------------------------------------
+        # EYLEM 2: Model Ayak İzini Tahminleme (Footprint Estimation)
+        # -------------------------------------------------------------------
+        footprint_estimation:
+          system_prompt: |
+            Sen, büyük yapay zeka modellerinin hesaplama maliyetleri ve çevresel etkileri konusunda uzmanlaşmış bir araştırma analistisin. Bilgilerin, kamuya açık akademik makalelere (örn: Stanford HAI, Epoch AI) ve güvenilir endüstri raporlarına dayanmaktadır. ASLA veri uydurmamalısın.
+
+            KURALLAR:
+            1. Çıktın, yalnızca geçerli bir JSON nesnesi OLMALIDIR.
+            2. Belirtilen model hakkında güvenilir ve kamuya açık bir veri bulamazsan, AŞAĞIDAKİ JSON'u döndürmek ZORUNDASIN:
+               { "found": false, "modelName": "{{model_name}}", "reason": "Bu model veya sınıfı için güvenilir ve kamuya açık bir çevresel etki verisi bulunamadı." }
+            3. Veri bulduğunda, AŞAĞIDAKİ JSON ŞEMASINA tam olarak uymak ZORUNDASIN:
+               {
+                 "modelName": "<string>", // Analiz edilen modelin adı
+                 "found": true,
+                 "confidence": "Yüksek (Doğrudan Raporlanmış) | Orta (Modellenmiş Tahmin) | Düşük (Spekülatif)", // Verinin güvenilirlik seviyesi
+                 "summary": "<string>", // Bulguların 1-2 cümlelik özeti.
+                 "training": { // Eğitim maliyetleri
+                   "energy_gwh": <number|null>,
+                   "water_million_liters": <number|null>,
+                   "carbon_ton_co2e": <number|null>
+                 },
+                 "inference": { // Çıkarım (kullanım) maliyetleri
+                   "energy_wh_per_1k_tokens": <number|null>
+                 },
+                 "sources": [ // Verilerin alındığı kaynakların listesi
+                   { "name": "<string>", "url": "<string|null>" }
+                 ]
+               }
+
+          user_prompt_template: |
+            Sistem talimatlarına ve kurallarına harfiyen uyarak, "{{model_name}}" adlı yapay zeka modelinin çevresel ayak izi hakkında, belirtilen JSON formatında detaylı bir analiz sun.
+  - role: user
+    content: >-
+      import React, { useState, useEffect } from 'react';
+
+      import {
+        StyleSheet,
+        Text,
+        View,
+        TextInput,
+        Button,
+        ScrollView, // FlatList yerine ScrollView kullanmak daha esnek olabilir
+        ActivityIndicator,
+        SafeAreaView,
+        StatusBar,
+        Alert
+      } from 'react-native';
+
+      import axios from 'axios';
+
+
+      // YEREL API URL'si
+
+      // Bu adres, backend sunucunuzun çalıştığı adrestir.
+
+      // Netlify Dev veya benzeri bir proxy kullanmıyorsak, tabletinizin IP
+      adresini kullanmanız gerekebilir.
+
+      // Şimdilik localhost en basitidir, çünkü her ikisi de aynı cihazda
+      çalışıyor.
+
+      const API_BASE_URL = 'http://localhost:3001';
+
+
+      export default function App() {
+        // STATE'LER
+        const [inputText, setInputText] = useState(''); // Kullanıcının girdiği metin
+        const [analysisResult, setAnalysisResult] = useState(null); // AI analiz sonucu
+        const [isLoading, setIsLoading] = useState(false); // Yükleme durumu
+        
+        // Analizi başlatan fonksiyon
+        const handleAnalyzePress = async () => {
+          if (inputText.trim() === '') {
+            Alert.alert('Hata', 'Lütfen analiz edilecek bir metin girin.');
+            return;
+          }
+
+          setIsLoading(true); // Yüklemeyi başlat
+          setAnalysisResult(null); // Eski sonucu temizle
+
+          try {
+            // Backend'deki /api/analyze endpoint'ine POST isteği gönderiyoruz
+            const response = await axios.post(`${API_BASE_URL}/api/analyze`, {
+              text: inputText, // state'deki metni body'de gönder
+            });
+            
+            // Gelen cevap doğrudan JSON nesnesi olmalı
+            setAnalysisResult(response.data);
+
+          } catch (error) {
+            console.error('Analiz hatası:', error);
+            Alert.alert('Analiz Başarısız', 'Sunucuya bağlanırken bir hata oluştu. Lütfen tekrar deneyin.');
+            setAnalysisResult({ error: 'Analiz sırasında bir hata oluştu.' }); // Hata durumunu göster
+          } finally {
+            setIsLoading(false); // Yüklemeyi bitir
+          }
+        };
+
+        // Analiz sonucunu göstermek için bir yardımcı bileşen
+        const renderAnalysis = () => {
+          if (!analysisResult) {
+            return null; // Gösterilecek bir sonuç yoksa boş dön
+          }
+          
+          // Eğer AI veri bulamadıysa
+          if (analysisResult.found === false) {
+            return (
+              <View style={styles.resultCard}>
+                  <Text style={styles.resultTitle}>Sonuç Bulunamadı</Text>
+                  <Text>{analysisResult.reason}</Text>
+              </View>
+            );
+          }
+          
+          // Eğer AI veri bulduysa
+          if (analysisResult.found === true) {
+            // İç içe nesnelerden verileri alıyoruz
+            const { resource, value, context, sourceQuote } = analysisResult;
+            return (
+              <View style={styles.resultCard}>
+                  <Text style={styles.resultTitle}>Analiz Sonucu Başarılı</Text>
+                  <Text style={styles.resultText}><Text style={styles.bold}>Kaynak:</Text> {resource}</Text>
+                  <Text style={styles.resultText}><Text style={styles.bold}>Miktar:</Text> {value.amount} {value.unit}</Text>
+                  <Text style={styles.resultText}><Text style={styles.bold}>Bağlam:</Text> {context.entity} - {context.location} ({context.year || 'N/A'})</Text>
+                  <Text style={styles.sourceQuote}>"{sourceQuote}"</Text>
+              </View>
+            );
+          }
+
+          // Beklenmedik bir hata durumu için
+          return (
+              <View style={styles.resultCard}>
+                  <Text style={styles.resultTitle}>Hata</Text>
+                  <Text>Beklenmedik bir cevap formatı alındı.</Text>
+              </View>
+          );
+        };
+
+        return (
+          <SafeAreaView style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollContent}>
+              <Text style={styles.header}>AI-Footprint Metin Analizi</Text>
+              <Text style={styles.description}>
+                Yapay zekanın çevresel etkileriyle ilgili bir metin yapıştırın ve analiz etmesini bekleyin.
+              </Text>
+              
+              <View style={styles.inputContainer}>
+                <TextInput
+                  style={styles.textInput}
+                  multiline
+                  placeholder="Buraya bir haber metni, rapor veya makale yapıştırın..."
+                  value={inputText}
+                  onChangeText={setInputText}
+                />
+              </View>
+
+              <Button
+                title={isLoading ? 'Analiz Ediliyor...' : 'Metni Analiz Et'}
+                onPress={handleAnalyzePress}
+                disabled={isLoading}
+              />
+
+              {isLoading && <ActivityIndicator size="large" color="#007AFF" style={{ marginTop: 20 }} />}
+              
+              {/* Analiz sonucunu burada gösteriyoruz */}
+              {renderAnalysis()}
+
+            </ScrollView>
+          </SafeAreaView>
+        );
+      }
+
+
+      // STİL TANIMLAMALARI
+
+      const styles = StyleSheet.create({
+        container: {
+          flex: 1,
+          marginTop: StatusBar.currentHeight || 0,
+          backgroundColor: '#f0f2f5',
+        },
+        scrollContent: {
+          padding: 20,
+        },
+        header: {
+          fontSize: 26,
+          fontWeight: 'bold',
+          textAlign: 'center',
+          marginBottom: 10,
+        },
+        description: {
+          fontSize: 16,
+          textAlign: 'center',
+          color: '#666',
+          marginBottom: 20,
+        },
+        inputContainer: {
+          marginBottom: 20,
+        },
+        textInput: {
+          height: 150,
+          borderColor: '#ccc',
+          borderWidth: 1,
+          borderRadius: 8,
+          padding: 15,
+          fontSize: 16,
+          textAlignVertical: 'top', // multiline için önemli
+          backgroundColor: 'white',
+        },
+        resultCard: {
+          marginTop: 20,
+          backgroundColor: 'white',
+          borderRadius: 8,
+          padding: 15,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3,
+        },
+        resultTitle: {
+          fontSize: 18,
+          fontWeight: 'bold',
+          marginBottom: 10,
+        },
+        resultText: {
+          fontSize: 16,
+          marginBottom: 5,
+        },
+        bold: {
+          fontWeight: 'bold',
+        },
+        sourceQuote: {
+            fontSize: 14,
+            color: '#555',
+            fontStyle: 'italic',
+            marginTop: 10,
+            borderLeftColor: '#ccc',
+            borderLeftWidth: 3,
+            paddingLeft: 10,
+        }
+      });
+model: openai/gpt-4o
