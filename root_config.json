@@ -1,5 +1,5 @@
 {
-    "name": "Triggers",
-    "provider_region": "gcp-us-east4",
+    "name": "ai-footprint",
+    "provider_region": "gcp-us-central1",
     "deployment_model": "LOCAL"
 }
