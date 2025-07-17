@@ -1,6 +1,7 @@
 # AI-Footprint 🌍
 
 [![Lisans: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c8dfbe6c-2001-4914-9448-966c9e6b44f2/deploy-status)](https://app.netlify.com/projects/aifootprint/deploys)
 
 **Yapay zekanın gezegenimiz üzerindeki gizli maliyetini (su, enerji, karbon) şeffaf bir şekilde izleyen ve tahminleyen açık kaynaklı bir girişim.**
 
